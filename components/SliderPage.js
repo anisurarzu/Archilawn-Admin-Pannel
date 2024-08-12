@@ -19,21 +19,24 @@ import {
 } from "@ant-design/icons";
 import { v4 as uuidv4 } from "uuid";
 
-const SliderPage = () => {
+const SliderPage = ({ data }) => {
   const [visible, setVisible] = useState(false);
   const [editVisible, setEditVisible] = useState(false);
   const [sliders, setSliders] = useState([]);
   const [editingSlider, setEditingSlider] = useState(null);
   const [form] = Form.useForm();
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize] = useState(5);
+  const [pageSize] = useState(10); // Set pageSize to 10
 
   const handleCreate = (values) => {
+    const imageFile = values.image[0].originFileObj;
+    const imageUrl = URL.createObjectURL(imageFile); // Create URL for the image
+
     setSliders([
       ...sliders,
       {
         key: uuidv4(),
-        image: values.image[0].originFileObj,
+        image: imageUrl, // Store the image URL directly
         title: values.title,
         subtitle: values.subtitle,
       },
@@ -71,27 +74,27 @@ const SliderPage = () => {
       title: "Image",
       dataIndex: "image",
       key: "image",
-      render: (text) => (
-        <img
-          src={URL.createObjectURL(text)}
-          alt="Slider"
-          style={{ width: 100, height: 60 }}
-        />
+      width: 120, // Set the width for the image column
+      render: (image) => (
+        <img src={image} alt="Slider" style={{ width: 100, height: 60 }} />
       ),
     },
     {
       title: "Title",
       dataIndex: "title",
       key: "title",
+      width: 150, // Set a smaller width for the title column
     },
     {
       title: "Subtitle",
       dataIndex: "subtitle",
       key: "subtitle",
+      width: 200, // Set a smaller width for the subtitle column
     },
     {
       title: "Actions",
       key: "actions",
+      width: 150, // Set a smaller width for the actions column
       render: (_, record) => (
         <div className="flex space-x-2">
           <Button
@@ -116,7 +119,7 @@ const SliderPage = () => {
     },
   ];
 
-  const paginatedData = sliders.slice(
+  const paginatedData = data?.slice(
     (currentPage - 1) * pageSize,
     currentPage * pageSize
   );

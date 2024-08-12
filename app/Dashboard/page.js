@@ -22,7 +22,7 @@ import UserPage from "@/components/UserPage";
 
 const { Header, Sider, Content } = Layout;
 
-const Dashboard = () => {
+const Dashboard = ({sliders}) => {
   const router = useRouter();
   const [collapsed, setCollapsed] = useState(false);
   const [selectedMenu, setSelectedMenu] = useState("1");
@@ -46,7 +46,7 @@ const Dashboard = () => {
       case "1":
         return <DashboardHome />;
       case "2":
-        return <SliderPage />;
+        return <SliderPage data={sliders} />;
       case "3":
         return <ServicePage />;
       case "4":
@@ -79,12 +79,15 @@ const Dashboard = () => {
             width={collapsed ? 50 : 90}
             height={collapsed ? 25 : 30}
           /> */}
-          <img src={
+          <img
+            src={
               "https://archilawn.vercel.app/_next/image?url=%2Fimages%2Flogo.png&w=128&q=75"
             } // Update with the path to your logo image
-            alt="Logo" v 
+            alt="Logo"
+            v
             width={collapsed ? 50 : 90}
-            height={collapsed ? 25 : 30}/>
+            height={collapsed ? 25 : 30}
+          />
         </div>
         <Menu
           theme="light"
@@ -127,9 +130,7 @@ const Dashboard = () => {
       {/* Main Layout */}
       <Layout className="site-layout">
         {/* Header */}
-        <Header
-          className="bg-white flex justify-between items-center px-8 py-4 shadow-md"
-          style={{ padding: 0 }}>
+        <Header className="bg-white flex justify-between items-center pr-8 py-4 shadow-md">
           <h1 className="text-2xl font-bold text-[#8ABF55]">Dashboard</h1>
           <Button
             icon={<LogoutOutlined />}
