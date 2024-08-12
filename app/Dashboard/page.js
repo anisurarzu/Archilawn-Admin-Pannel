@@ -20,6 +20,9 @@ import ServicePage from "@/components/ServicePage";
 import PortfolioPage from "@/components/PortfolioPage";
 import UserPage from "@/components/UserPage";
 
+// Importing the logo statically
+import logo from "@/public/images/logo.png";
+
 const { Header, Sider, Content } = Layout;
 
 const Dashboard = () => {
@@ -71,13 +74,12 @@ const Dashboard = () => {
         collapsed={collapsed}
         onCollapse={(value) => setCollapsed(value)}
         className="site-layout-background">
-        <div className="logo-container pt-2  flex items-center justify-center">
+        <div className="logo-container py-2 flex items-center justify-center">
           <Image
-            src="/images/logo.png" // Update with the path to your logo image
+            src={logo} // Update with the path to your logo image
             alt="Logo"
             width={collapsed ? 50 : 90}
             height={collapsed ? 25 : 30}
-            className="pt-1"
           />
         </div>
         <Menu
