@@ -65,20 +65,26 @@ const Dashboard = () => {
 
   return (
     <Layout className="min-h-screen">
-   
       <Sider
         collapsible
         collapsed={collapsed}
         onCollapse={(value) => setCollapsed(value)}
         className="site-layout-background">
         <div className="logo-container py-2  flex items-center justify-center">
-          <Image
-            src="/images/logo.png" // Update with the path to your logo image
+          {/* <Image
+            src={
+              "https://archilawn.vercel.app/_next/image?url=%2Fimages%2Flogo.png&w=128&q=75"
+            } // Update with the path to your logo image
             alt="Logo"
             width={collapsed ? 50 : 90}
             height={collapsed ? 25 : 30}
-         
-          />
+          /> */}
+          <img src={
+              "https://archilawn.vercel.app/_next/image?url=%2Fimages%2Flogo.png&w=128&q=75"
+            } // Update with the path to your logo image
+            alt="Logo" v 
+            width={collapsed ? 50 : 90}
+            height={collapsed ? 25 : 30}/>
         </div>
         <Menu
           theme="light"
