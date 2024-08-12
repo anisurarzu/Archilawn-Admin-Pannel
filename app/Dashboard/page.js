@@ -11,6 +11,7 @@ import {
   AppstoreAddOutlined, // Services
   FolderOpenOutlined, // Portfolio
 } from "@ant-design/icons";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import SliderPage from "@/components/SliderPage";
@@ -70,12 +71,13 @@ const Dashboard = () => {
         collapsed={collapsed}
         onCollapse={(value) => setCollapsed(value)}
         className="site-layout-background">
-        <div className="logo-container pt-2 pb-[10px] flex items-center justify-center">
-          <img
+        <div className="logo-container pt-4 pb-3 flex items-center justify-center">
+          <Image
             src="/images/logo.png" // Update with the path to your logo image
             alt="Logo"
+            width={collapsed ? 50 : 90}
+            height={collapsed ? 25 : 30}
             className="pt-2"
-            style={{ width: 100, height: 47 }}
           />
         </div>
         <Menu
