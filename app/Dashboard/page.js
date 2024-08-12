@@ -71,13 +71,13 @@ const Dashboard = () => {
         collapsed={collapsed}
         onCollapse={(value) => setCollapsed(value)}
         className="site-layout-background">
-        <div className="logo-container pt-4 pb-3 flex items-center justify-center">
+        <div className="logo-container pt-2  flex items-center justify-center">
           <Image
             src="/images/logo.png" // Update with the path to your logo image
             alt="Logo"
             width={collapsed ? 50 : 90}
             height={collapsed ? 25 : 30}
-            className="pt-2"
+            className="pt-1"
           />
         </div>
         <Menu
