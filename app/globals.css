@@ -31,3 +31,27 @@ body {
     text-wrap: balance;
   }
 }
+
+
+/* dashboard start*/
+
+.ant-layout-sider {
+  background-color: white !important;
+}
+
+.ant-menu-light .ant-menu-item {
+  color: #8ABF55 !important;
+}
+
+.ant-menu-light .ant-menu-item:hover {
+  background-color: #f0f0f0 !important;
+}
+
+.ant-menu-light .ant-menu-item-selected {
+  background-color: #e6f7ff !important;
+}
+
+.ant-menu-item-icon {
+  color: #8ABF55 !important;
+}
+/* dashboard end */
