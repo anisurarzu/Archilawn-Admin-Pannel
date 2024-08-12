@@ -1,6 +1,7 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
-import { Layout, Menu, Button } from "antd";
+import { Layout, Menu, Button, Spin } from "antd";
 import {
   DashboardOutlined, // Dashboard
   UsergroupAddOutlined, // Users
@@ -11,11 +12,12 @@ import {
   FolderOpenOutlined, // Portfolio
 } from "@ant-design/icons";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import SliderPage from "@/components/SliderPage";
 import DashboardHome from "@/components/DashboardHome";
 import ServicePage from "@/components/ServicePage";
 import PortfolioPage from "@/components/PortfolioPage";
+import UserPage from "@/components/UserPage";
 
 const { Header, Sider, Content } = Layout;
 
@@ -23,10 +25,20 @@ const Dashboard = () => {
   const router = useRouter();
   const [collapsed, setCollapsed] = useState(false);
   const [selectedMenu, setSelectedMenu] = useState("1");
+  const [loading, setLoading] = useState(true);
 
   const handleLogout = () => {
     router.push("/login");
   };
+
+  useEffect(() => {
+    // Simulate a content load
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 1000); // Adjust the timeout as needed
+
+    return () => clearTimeout(timer);
+  }, [selectedMenu]);
 
   const renderContent = () => {
     switch (selectedMenu) {
@@ -36,6 +48,8 @@ const Dashboard = () => {
         return <SliderPage />;
       case "3":
         return <ServicePage />;
+      case "4":
+        return <UserPage />;
       case "5":
         return <PortfolioPage />;
       default:
@@ -60,7 +74,7 @@ const Dashboard = () => {
           <img
             src="/images/logo.png" // Update with the path to your logo image
             alt="Logo"
-            className='pt-2'
+            className="pt-2"
             style={{ width: 100, height: 47 }}
           />
         </div>
@@ -120,7 +134,13 @@ const Dashboard = () => {
 
         {/* Content */}
         <Content className="m-6 p-6 bg-white rounded-lg shadow-lg">
-          {renderContent()}
+          {loading ? (
+            <div className="flex justify-center items-center h-full">
+              <Spin size="large" />
+            </div>
+          ) : (
+            renderContent()
+          )}
         </Content>
       </Layout>
     </Layout>
