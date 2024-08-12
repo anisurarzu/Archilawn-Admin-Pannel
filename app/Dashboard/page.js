@@ -21,7 +21,7 @@ import PortfolioPage from "@/components/PortfolioPage";
 import UserPage from "@/components/UserPage";
 
 // Importing the logo statically
-import logo from "@/public/images/logo.png";
+import logo from "/public/images/logo.png";
 
 const { Header, Sider, Content } = Layout;
 
