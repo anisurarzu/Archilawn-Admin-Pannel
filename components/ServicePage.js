@@ -42,7 +42,7 @@ const ServicePage = () => {
     setLoading(true);
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.get("http://localhost:5000/api/services", {
+      const response = await axios.get("https://archilawn-server.onrender.com/api/services", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -91,7 +91,7 @@ const ServicePage = () => {
 
         if (isEditing) {
           await axios.put(
-            `http://localhost:5000/api/service/${editingKey}`,
+            `https://archilawn-server.onrender.com/api/service/${editingKey}`,
             serviceData,
             {
               headers: {
@@ -101,7 +101,7 @@ const ServicePage = () => {
           );
           message.success("Service updated successfully!");
         } else {
-          await axios.post("http://localhost:5000/api/service", serviceData, {
+          await axios.post("https://archilawn-server.onrender.com/api/service", serviceData, {
             headers: {
               Authorization: `Bearer ${token}`,
             },
@@ -126,7 +126,7 @@ const ServicePage = () => {
     setLoading(true);
     try {
       const token = localStorage.getItem("token");
-      await axios.delete(`http://localhost:5000/api/service/${key}`, {
+      await axios.delete(`https://archilawn-server.onrender.com/api/service/${key}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

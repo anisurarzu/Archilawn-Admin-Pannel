@@ -63,7 +63,7 @@ const Register = () => {
     try {
       // Proceed with the registration after successful image upload
       const response = await axios.post(
-        "http://localhost:5000/api/auth/register",
+        "https://archilawn-server.onrender.com/api/auth/register",
         {
           username: values.username,
           email: values.email,

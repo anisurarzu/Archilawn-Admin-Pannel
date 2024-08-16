@@ -34,7 +34,7 @@ const PortfolioPage = () => {
   const fetchPortfolios = async () => {
     setLoading(true);
     try {
-      const response = await axios.get("http://localhost:5000/api/portfolios", {
+      const response = await axios.get("https://archilawn-server.onrender.com/api/portfolios", {
         headers: { Authorization: `Bearer ${token}` },
       });
       setPortfolios(response.data);
@@ -74,7 +74,7 @@ const PortfolioPage = () => {
         };
 
         if (isEditing) {
-          await axios.put(`http://localhost:5000/api/portfolio/${editingKey}`, newPortfolio, {
+          await axios.put(`https://archilawn-server.onrender.com/api/portfolio/${editingKey}`, newPortfolio, {
             headers: { Authorization: `Bearer ${token}` },
           });
           setPortfolios((prev) =>
@@ -84,7 +84,7 @@ const PortfolioPage = () => {
           );
           message.success("Portfolio updated successfully!");
         } else {
-          await axios.post("http://localhost:5000/api/portfolio", newPortfolio, {
+          await axios.post("https://archilawn-server.onrender.com/api/portfolio", newPortfolio, {
             headers: { Authorization: `Bearer ${token}` },
           });
           setPortfolios((prev) => [...prev, newPortfolio]);
@@ -117,7 +117,7 @@ const PortfolioPage = () => {
   const handleDelete = async (key) => {
     setLoading(true);
     try {
-      await axios.delete(`http://localhost:5000/api/portfolio/${key}`, {
+      await axios.delete(`https://archilawn-server.onrender.com/api/portfolio/${key}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setPortfolios((prev) =>

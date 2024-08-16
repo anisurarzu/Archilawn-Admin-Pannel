@@ -20,7 +20,7 @@ const Login = () => {
   const handleSubmit = async (values, { setSubmitting }) => {
     setSubmitting(true);
     try {
-      const response = await fetch("http://localhost:5000/api/auth/login", {
+      const response = await fetch("https://archilawn-server.onrender.com/api/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -37,7 +37,7 @@ const SliderPage = ({ initialSliders }) => {
       const token = localStorage.getItem("token");
 
       // Perform the GET request with the token included in the headers
-      const response = await coreAxios.get("http://localhost:5000/api/sliders");
+      const response = await coreAxios.get("https://archilawn-server.onrender.com/api/sliders");
       // Update the sliders state with the response data
       setSliders(response.data);
     } catch (error) {
@@ -81,7 +81,7 @@ const SliderPage = ({ initialSliders }) => {
         const token = localStorage.getItem("token"); // Adjust this if needed
 
         // Post the slider data with token in the headers
-        await axios.post("http://localhost:5000/api/sliders", sliderData, {
+        await axios.post("https://archilawn-server.onrender.com/api/sliders", sliderData, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -129,7 +129,7 @@ const SliderPage = ({ initialSliders }) => {
 
       // Send update request to the server with the updated slider data
       await axios.put(
-        `http://localhost:5000/api/sliders/${editingSlider.key}`,
+        `https://archilawn-server.onrender.com/api/sliders/${editingSlider.key}`,
         updatedSlider,
         {
           headers: {
@@ -158,7 +158,7 @@ const SliderPage = ({ initialSliders }) => {
       const token = localStorage.getItem("token"); // Adjust this if needed
 
       // Send delete request to the server
-      await axios.delete(`http://localhost:5000/api/sliders/${key}`, {
+      await axios.delete(`https://archilawn-server.onrender.com/sliders/${key}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -364,7 +364,7 @@ const SliderPage = ({ initialSliders }) => {
 
 export async function getServerSideProps() {
   try {
-    const response = await axios.get("http://localhost:5000/api/sliders");
+    const response = await axios.get("https://archilawn-server.onrender.com/api/sliders");
     return {
       props: {
         initialSliders: response.data,
