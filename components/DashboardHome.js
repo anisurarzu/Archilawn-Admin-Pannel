@@ -1,29 +1,33 @@
 "use client";
 
 import { Card, Col, Row, Statistic, Typography, Divider } from "antd";
-import { ShoppingCartOutlined, DollarCircleOutlined, UsergroupAddOutlined } from "@ant-design/icons";
-import { Line } from '@ant-design/charts';
+import {
+  ShoppingCartOutlined,
+  DollarCircleOutlined,
+  UsergroupAddOutlined,
+} from "@ant-design/icons";
+import { Line } from "@ant-design/charts";
 
 const { Title } = Typography;
 
 const DashboardHome = () => {
   // Example data for the chart
   const data = [
-    { month: 'Jan', sales: 1000 },
-    { month: 'Feb', sales: 1200 },
-    { month: 'Mar', sales: 1100 },
-    { month: 'Apr', sales: 1300 },
-    { month: 'May', sales: 1400 },
-    { month: 'Jun', sales: 1600 },
+    { month: "Jan", sales: 1000 },
+    { month: "Feb", sales: 1200 },
+    { month: "Mar", sales: 1100 },
+    { month: "Apr", sales: 1300 },
+    { month: "May", sales: 1400 },
+    { month: "Jun", sales: 1600 },
   ];
 
   const config = {
     data,
-    xField: 'month',
-    yField: 'sales',
+    xField: "month",
+    yField: "sales",
     point: {
       size: 5,
-      shape: 'diamond',
+      shape: "diamond",
     },
     smooth: true,
   };
@@ -31,7 +35,9 @@ const DashboardHome = () => {
   return (
     <div className="p-4 lg:p-6">
       {/* Title */}
-      <Title level={2} className="mb-4 lg:mb-6 text-[#8ABF55] text-center lg:text-left">
+      <Title
+        level={2}
+        className="mb-4 lg:mb-6 text-[#8ABF55] text-center lg:text-left">
         Dashboard Overview
       </Title>
 
@@ -42,8 +48,8 @@ const DashboardHome = () => {
             <Statistic
               title="Total Orders"
               value={1200}
-              prefix={<ShoppingCartOutlined style={{ color: '#8ABF55' }} />}
-              valueStyle={{ color: '#8ABF55' }}
+              prefix={<ShoppingCartOutlined style={{ color: "#8ABF55" }} />}
+              valueStyle={{ color: "#8ABF55" }}
             />
           </Card>
         </Col>
@@ -52,8 +58,8 @@ const DashboardHome = () => {
             <Statistic
               title="Total Earnings"
               value={54000}
-              prefix={<DollarCircleOutlined style={{ color: '#8ABF55' }} />}
-              valueStyle={{ color: '#8ABF55' }}
+              prefix={<DollarCircleOutlined style={{ color: "#8ABF55" }} />}
+              valueStyle={{ color: "#8ABF55" }}
             />
           </Card>
         </Col>
@@ -62,8 +68,8 @@ const DashboardHome = () => {
             <Statistic
               title="Total Users"
               value={320}
-              prefix={<UsergroupAddOutlined style={{ color: '#8ABF55' }} />}
-              valueStyle={{ color: '#8ABF55' }}
+              prefix={<UsergroupAddOutlined style={{ color: "#8ABF55" }} />}
+              valueStyle={{ color: "#8ABF55" }}
             />
           </Card>
         </Col>
@@ -71,7 +77,9 @@ const DashboardHome = () => {
 
       {/* Graph */}
       <div className="bg-white p-4 lg:p-6 rounded-lg shadow-lg">
-        <Title level={4} className="text-[#8ABF55] mb-4 text-center lg:text-left">
+        <Title
+          level={4}
+          className="text-[#8ABF55] mb-4 text-center lg:text-left">
           Sales Over Time
         </Title>
         <Line {...config} />

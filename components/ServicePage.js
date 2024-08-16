@@ -1,69 +1,152 @@
 "use client";
 
-import { useState } from "react";
-import { Button, Modal, Form, Input, Upload, Table, message } from "antd";
+import { useState, useEffect } from "react";
+import {
+  Button,
+  Modal,
+  Form,
+  Input,
+  Upload,
+  Table,
+  message,
+  Spin,
+  Collapse,
+  InputNumber,
+} from "antd";
 import {
   UploadOutlined,
   EditOutlined,
   DeleteOutlined,
+  PlusOutlined,
 } from "@ant-design/icons";
-import { v4 as uuidv4 } from "uuid";
+import {
+  useFormik,
+  FieldArray,
+  FormikProvider,
+  Form as FormikForm,
+  Field,
+} from "formik";
+import axios from "axios";
+
+const { Panel } = Collapse;
 
 const ServicePage = () => {
   const [visible, setVisible] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editingKey, setEditingKey] = useState(null);
   const [services, setServices] = useState([]);
-  const [form] = Form.useForm();
+  const [loading, setLoading] = useState(false);
+  const imgbbAPIKey = "0d928e97225b72fcd198fa40d99a15d5"; // Replace with your actual API key
 
-  const handleCreate = (values) => {
-    setServices([
-      ...services,
-      {
-        key: uuidv4(),
-        image: values.image[0].originFileObj,
-        serviceName: values.serviceName,
-        serviceDetails: values.serviceDetails,
-        price: values.price,
-      },
-    ]);
-    form.resetFields();
-    setVisible(false);
-    message.success("Service added successfully!");
+  const fetchServices = async () => {
+    setLoading(true);
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.get("http://localhost:5000/api/services", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setServices(response.data);
+    } catch (error) {
+      message.error("Failed to fetch services. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleUpdate = (values) => {
-    setServices(
-      services.map((service) =>
-        service.key === editingKey
-          ? {
-              ...service,
-              image: values.image[0].originFileObj,
-              serviceName: values.serviceName,
-              serviceDetails: values.serviceDetails,
-              price: values.price,
+  useEffect(() => {
+    fetchServices();
+  }, []);
+
+  const formik = useFormik({
+    initialValues: {
+      image: null,
+      title: "",
+      packages: [
+        // Updated field name
+        { name: "", details: [{ subDetails: "" }], price: "", discount: "" },
+      ],
+    },
+    onSubmit: async (values, { resetForm }) => {
+      setLoading(true);
+      try {
+        const formData = new FormData();
+        formData.append("image", values.image);
+
+        const imgbbResponse = await axios.post(
+          `https://api.imgbb.com/1/upload?key=${imgbbAPIKey}`,
+          formData
+        );
+
+        const imageUrl = imgbbResponse.data.data.url;
+
+        const serviceData = {
+          image: imageUrl,
+          title: values.title,
+          packages: values.packages, // Updated field name
+        };
+
+        const token = localStorage.getItem("token");
+
+        if (isEditing) {
+          await axios.put(
+            `http://localhost:5000/api/service/${editingKey}`,
+            serviceData,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
             }
-          : service
-      )
-    );
-    setEditingKey(null);
-    setVisible(false);
-    message.success("Service updated successfully!");
-  };
+          );
+          message.success("Service updated successfully!");
+        } else {
+          await axios.post("http://localhost:5000/api/service", serviceData, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+          message.success("Service added successfully!");
+        }
 
-  const handleDelete = (key) => {
-    setServices(services.filter((service) => service.key !== key));
-    message.success("Service deleted successfully!");
+        fetchServices();
+        resetForm();
+        setVisible(false);
+        setIsEditing(false);
+        setEditingKey(null);
+      } catch (error) {
+        message.error("Failed to save service. Please try again.");
+      } finally {
+        setLoading(false);
+      }
+    },
+  });
+
+  const handleDelete = async (key) => {
+    setLoading(true);
+    try {
+      const token = localStorage.getItem("token");
+      await axios.delete(`http://localhost:5000/api/service/${key}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      message.success("Service deleted successfully!");
+      fetchServices();
+    } catch (error) {
+      message.error("Failed to delete service. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleEdit = (record) => {
-    setEditingKey(record.key);
-    form.setFieldsValue({
-      image: [record.image],
-      serviceName: record.serviceName,
-      serviceDetails: record.serviceDetails,
-      price: record.price,
+    formik.setValues({
+      image: null,
+      title: record.title,
+      packages: record.packages, // Updated field name
     });
+    setEditingKey(record?._id);
     setVisible(true);
     setIsEditing(true);
   };
@@ -74,27 +157,44 @@ const ServicePage = () => {
       dataIndex: "image",
       key: "image",
       render: (text) => (
-        <img
-          src={URL.createObjectURL(text)}
-          alt="Service"
-          style={{ width: 100, height: 60 }}
-        />
+        <img src={text} alt="Service" style={{ width: 100, height: 60 }} />
       ),
     },
     {
-      title: "Service Name",
-      dataIndex: "serviceName",
-      key: "serviceName",
+      title: "Title",
+      dataIndex: "title",
+      key: "title",
     },
     {
-      title: "Service Details",
-      dataIndex: "serviceDetails",
-      key: "serviceDetails",
-    },
-    {
-      title: "Price",
-      dataIndex: "price",
-      key: "price",
+      title: "Packages",
+      key: "packages", // Updated field name
+      render: (_, record) => (
+        <div>
+          {record?.packages?.map(
+            (
+              pkg,
+              index // Updated field name
+            ) => (
+              <Collapse key={index}>
+                <Panel header={pkg.name} key={index}>
+                  <div>
+                    <strong>Details:</strong>
+                  </div>
+                  {pkg.details.map((detail, idx) => (
+                    <div key={idx}>- {detail.subDetails}</div>
+                  ))}
+                  <div>
+                    <strong>Price:</strong> ${pkg.price}
+                  </div>
+                  <div>
+                    <strong>Discount:</strong> ${pkg.discount}
+                  </div>
+                </Panel>
+              </Collapse>
+            )
+          )}
+        </div>
+      ),
     },
     {
       title: "Actions",
@@ -108,7 +208,7 @@ const ServicePage = () => {
           />
           <Button
             icon={<DeleteOutlined />}
-            onClick={() => handleDelete(record.key)}
+            onClick={() => handleDelete(record._id)}
             className="text-red-500"
           />
         </div>
@@ -121,69 +221,193 @@ const ServicePage = () => {
       <Button
         type="primary"
         onClick={() => {
-          setIsEditing(false);
-          form.resetFields();
+          formik.resetForm();
           setVisible(true);
         }}
         className="mb-4 bg-[#8ABF55] hover:bg-[#7DA54E] text-white">
         Add New Service
       </Button>
-      <Table
-        columns={columns}
-        dataSource={services}
-        pagination={{ pageSize: 10 }}
-        scroll={{ x: true }} // Enables horizontal scrolling for tables with many columns
-      />
+      <Spin spinning={loading}>
+        <Table
+          columns={columns}
+          dataSource={services}
+          pagination={{ pageSize: 10 }}
+          scroll={{ x: true }}
+        />
+      </Spin>
       <Modal
         title={isEditing ? "Edit Service" : "Create Service"}
         visible={visible}
         onCancel={() => setVisible(false)}
         footer={null}
         className="p-4 md:p-6 lg:p-8">
-        <Form form={form} onFinish={isEditing ? handleUpdate : handleCreate}>
-          <Form.Item
-            name="image"
-            label="Image"
-            rules={[{ required: true, message: "Please upload an image!" }]}>
-            <Upload
-              listType="picture"
-              maxCount={1}
-              beforeUpload={() => false} // Prevent automatic upload
-            >
-              <Button icon={<UploadOutlined />}>Upload</Button>
-            </Upload>
-          </Form.Item>
-          <Form.Item
-            name="serviceName"
-            label="Service Name"
-            rules={[
-              { required: true, message: "Please enter a service name!" },
-            ]}>
-            <Input />
-          </Form.Item>
-          <Form.Item
-            name="serviceDetails"
-            label="Service Details"
-            rules={[
-              { required: true, message: "Please enter service details!" },
-            ]}>
-            <Input.TextArea rows={4} />
-          </Form.Item>
-          <Form.Item
-            name="price"
-            label="Price"
-            rules={[{ required: true, message: "Please enter the price!" }]}>
-            <Input prefix="$" />
-          </Form.Item>
-          <Form.Item>
-            <Button
-              type="primary"
-              htmlType="submit"
-              className="bg-[#8ABF55] hover:bg-[#7DA54E] text-white">
-              {isEditing ? "Update" : "Create"}
-            </Button>
-          </Form.Item>
-        </Form>
+        <FormikProvider value={formik}>
+          <FormikForm onSubmit={formik.handleSubmit}>
+            <Form.Item
+              label="Image"
+              rules={[{ required: true, message: "Please upload an image!" }]}>
+              <Upload
+                listType="picture"
+                maxCount={1}
+                beforeUpload={(file) => {
+                  formik.setFieldValue("image", file);
+                  return false;
+                }}>
+                <Button icon={<UploadOutlined />}>Upload</Button>
+              </Upload>
+            </Form.Item>
+            <Form.Item
+              label="Title"
+              rules={[{ required: true, message: "Please enter a title!" }]}>
+              <Input
+                name="title"
+                onChange={formik.handleChange}
+                value={formik.values.title}
+              />
+            </Form.Item>
+            <FieldArray
+              name="packages" // Updated field name
+              render={(arrayHelpers) => (
+                <div>
+                  {formik.values.packages?.map(
+                    (
+                      pkg,
+                      index // Updated field name
+                    ) => (
+                      <div key={index} className="mb-4 border p-4 rounded">
+                        <Form.Item
+                          label={`Package Name ${index + 1}`}
+                          rules={[
+                            {
+                              required: true,
+                              message: "Please enter a package name!",
+                            },
+                          ]}>
+                          <Input
+                            name={`packages.${index}.name`} // Updated field name
+                            onChange={formik.handleChange}
+                            value={pkg.name}
+                          />
+                        </Form.Item>
+                        <FieldArray
+                          name={`packages.${index}.details`} // Updated field name
+                          render={(detailsArrayHelpers) => (
+                            <div>
+                              <Button
+                                type="dashed"
+                                onClick={() =>
+                                  detailsArrayHelpers.push({ subDetails: "" })
+                                }
+                                icon={<PlusOutlined />}
+                                className="mb-2">
+                                Add Detail
+                              </Button>
+                              {pkg.details.map((detail, idx) => (
+                                <div key={idx} className="mb-2">
+                                  <Form.Item
+                                    label={`Detail ${idx + 1}`}
+                                    rules={[
+                                      {
+                                        required: true,
+                                        message: "Please enter detail!",
+                                      },
+                                    ]}>
+                                    <Input
+                                      name={`packages.${index}.details.${idx}.subDetails`} // Updated field name
+                                      onChange={formik.handleChange}
+                                      value={detail.subDetails}
+                                    />
+                                  </Form.Item>
+                                  <Button
+                                    type="link"
+                                    onClick={() =>
+                                      detailsArrayHelpers.remove(idx)
+                                    }
+                                    className="text-red-500">
+                                    Remove
+                                  </Button>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        />
+                        <Form.Item
+                          label={`Price ${index + 1}`}
+                          rules={[
+                            {
+                              required: true,
+                              message: "Please enter the price!",
+                            },
+                          ]}>
+                          <InputNumber
+                            name={`packages.${index}.price`} // Updated field name
+                            onChange={
+                              (value) =>
+                                formik.setFieldValue(
+                                  `packages.${index}.price`,
+                                  value
+                                ) // Updated field name
+                            }
+                            value={pkg.price}
+                          />
+                        </Form.Item>
+                        <Form.Item
+                          label={`Discount ${index + 1}`}
+                          rules={[
+                            {
+                              required: true,
+                              message: "Please enter the discount!",
+                            },
+                          ]}>
+                          <InputNumber
+                            name={`packages.${index}.discount`} // Updated field name
+                            onChange={
+                              (value) =>
+                                formik.setFieldValue(
+                                  `packages.${index}.discount`,
+                                  value
+                                ) // Updated field name
+                            }
+                            value={pkg.discount}
+                          />
+                        </Form.Item>
+                        <Button
+                          type="link"
+                          onClick={() => arrayHelpers.remove(index)}
+                          className="text-red-500">
+                          Remove Package
+                        </Button>
+                      </div>
+                    )
+                  )}
+                  <Button
+                    type="dashed"
+                    onClick={() =>
+                      arrayHelpers.push({
+                        name: "",
+                        details: [{ subDetails: "" }],
+                        price: "",
+                        discount: "",
+                      })
+                    }
+                    icon={<PlusOutlined />}
+                    className="mb-2">
+                    Add Package
+                  </Button>
+                </div>
+              )}
+            />
+            <Form.Item>
+              <Button
+                type="primary"
+                htmlType="submit"
+                loading={loading}
+                className="bg-[#8ABF55] hover:bg-[#7DA54E] text-white">
+                {isEditing ? "Update Service" : "Create Service"}
+              </Button>
+            </Form.Item>
+          </FormikForm>
+        </FormikProvider>
       </Modal>
     </div>
   );

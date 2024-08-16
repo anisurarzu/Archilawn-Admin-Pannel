@@ -1,17 +1,21 @@
-import Image from "next/image";
-import Login from "./Login/page";
-import Dashboard from "./Dashboard/page";
-import getSliders from "@/dataFetch/getSliders";
+// app/home/page.tsx (or page.js)
+"use client"; // Ensure this is uncommented for client-side rendering
 
-export default async function Home() {
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import Dashboard from "@/components/Dashboard/Dashboard";
 
-  const sliders = await getSliders()
+export default function Home() {
+  const router = useRouter();
 
+  /*  useEffect(() => {
+    // Redirect to login page
+    router.push("/login");
+  }, [router]); */
 
   return (
     <main>
-      {/* <Login /> */}
-      <Dashboard sliders={sliders} />
+      {/* Optionally render components or placeholders */} <Dashboard />{" "}
     </main>
   );
 }
