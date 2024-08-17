@@ -42,11 +42,14 @@ const ServicePage = () => {
     setLoading(true);
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.get("https://archilawn-server.onrender.com/api/services", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await axios.get(
+        "https://archilawn-server.onrender.com/api/services",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       setServices(response.data);
     } catch (error) {
       message.error("Failed to fetch services. Please try again.");
@@ -101,11 +104,15 @@ const ServicePage = () => {
           );
           message.success("Service updated successfully!");
         } else {
-          await axios.post("https://archilawn-server.onrender.com/api/service", serviceData, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
+          await axios.post(
+            "https://archilawn-server.onrender.com/api/service",
+            serviceData,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
           message.success("Service added successfully!");
         }
 
@@ -126,11 +133,14 @@ const ServicePage = () => {
     setLoading(true);
     try {
       const token = localStorage.getItem("token");
-      await axios.delete(`https://archilawn-server.onrender.com/api/service/${key}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      await axios.delete(
+        `https://archilawn-server.onrender.com/api/service/${key}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       message.success("Service deleted successfully!");
       fetchServices();
     } catch (error) {
