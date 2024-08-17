@@ -4,8 +4,8 @@
 
 :root {
   --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+  --background-start-rgb: 255, 255, 255; /* Changed to white */
+  --background-end-rgb: 255, 255, 255;   /* Changed to white */
 }
 
 @media (prefers-color-scheme: dark) {
@@ -18,12 +18,12 @@
 
 body {
   color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  background: rgb(var(--background-start-rgb)); /* Set to white */
+}
+
+/* Smooth scrolling for the entire document */
+html {
+  scroll-behavior: smooth;
 }
 
 @layer utilities {
@@ -32,26 +32,27 @@ body {
   }
 }
 
-
-/* dashboard start*/
-
-.ant-layout-sider {
-  background-color: white !important;
+/* Hide the default carousel dots */
+.ant-carousel .slick-dots {
+  display: none !important;
 }
 
-.ant-menu-light .ant-menu-item {
-  color: #8ABF55 !important;
+/* Custom swiper pagination bullets */
+.swiper-pagination-bullet {
+  background-color: #000;
+  opacity: 1;
 }
 
-.ant-menu-light .ant-menu-item:hover {
-  background-color: #f0f0f0 !important;
+.swiper-pagination-bullet-active {
+  background-color: #ff0000;
 }
 
-.ant-menu-light .ant-menu-item-selected {
-  background-color: #e6f7ff !important;
+/* Custom drop shadow */
+.custom-drop-shadow {
+  box-shadow: 0 20px 25px -5px rgba(230, 238, 241, 1), 0 10px 10px -5px rgba(230, 238, 241, 1);
 }
 
-.ant-menu-item-icon {
-  color: #8ABF55 !important;
+/* Custom light shadow */
+.custom-light-shadow {
+  box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.1), 0px 6px 6px rgba(0, 0, 0, 0.05);
 }
-/* dashboard end */

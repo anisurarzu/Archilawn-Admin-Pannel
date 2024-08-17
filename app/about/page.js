@@ -1,10 +1,10 @@
-import Dashboard from "@/components/Dashboard/Dashboard";
+import AboutUs from "@/components/pages/about/AboutUs";
 import React from "react";
 
 export default function page() {
   return (
     <div>
-      <Dashboard />
+      <AboutUs />
     </div>
   );
 }
